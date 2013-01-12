@@ -1,0 +1,10 @@
+<h1>{{ auction}} - {{ auction.item.category }}</h1>
+Created : {{ auction.created }} <br/>
+Updated : {{ auction.updated }}<br/>
+Seller : {{ auction.seller.first_name }} {{ auction.seller.last_name }}<br/>
+<h2>Bidders</h2>
+<ul>
+    {% for bid in auction.bid_set.all %}
+        <li>{{ bid}}</li>
+    {% endfor %}
+</ul>

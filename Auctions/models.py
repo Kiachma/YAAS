@@ -1,5 +1,7 @@
+# coding=utf-8
 from django.db import models
 from django.contrib.auth.models import User
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -25,6 +27,8 @@ class Bid(models.Model):
     auction= models.ForeignKey(Auction)
     user = models.ForeignKey(User)
     bid= models.DecimalField(max_digits=9 ,decimal_places=2)
+    def __unicode__(self):
+        return self.user.first_name + ' '+ self.user.last_name + ' - ' +str(self.bid)
 
 
 

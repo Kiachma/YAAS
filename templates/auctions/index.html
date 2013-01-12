@@ -1,0 +1,9 @@
+{% if latest_auction_list %}
+    <ul>
+        {% for auction in latest_auction_list %}
+            <li><a href="/auctions/{{ auction.id }}/">{{ auction.item }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No auctions are available.</p>
+{% endif %}

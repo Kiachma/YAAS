@@ -1,8 +1,9 @@
-from django.conf.urls.defaults import patterns, include
+
+from django.conf.urls import patterns, url, include
 
 from django.contrib import admin
 admin.autodiscover()
 urlpatterns = patterns('',
-    (r'^auctions/$', include('Auctions.urls')),
-    (r'^admin/', include(admin.site.urls)),
+    url(r'^auctions/', include('Auctions.urls')),
+    url(r'^admin/', include(admin.site.urls)),
 )
