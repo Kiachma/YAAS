@@ -1,7 +1,8 @@
+
 {% if latest_auction_list %}
     <ul>
         {% for auction in latest_auction_list %}
-            <li><a href="/auctions/{{ auction.id }}/">{{ auction.item }}</a></li>
+            <li><a href="{% url auctions:detail auction.id %}">{{ auction.name }}</a></li>
         {% endfor %}
     </ul>
 {% else %}

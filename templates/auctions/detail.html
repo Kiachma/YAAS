@@ -1,10 +1,22 @@
-<h1>{{ auction}} - {{ auction.item.category }}</h1>
-Created : {{ auction.created }} <br/>
-Updated : {{ auction.updated }}<br/>
-Seller : {{ auction.seller.first_name }} {{ auction.seller.last_name }}<br/>
-<h2>Bidders</h2>
-<ul>
-    {% for bid in auction.bid_set.all %}
-        <li>{{ bid}}</li>
-    {% endfor %}
-</ul>
+<html>
+    <head>
+        <title>{{ auction.category }} - {{ auction }}</title>
+    </head>
+    <body>
+        <h1><a href="{% url auctions:index%}">{{ auction.category }}</a> - {{ auction }}</h1>
+
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+        <form action="/auctions/{{ auction.id }}/save/" method="post">{% csrf_token %}
+            {% csrf_token %}
+
+            <table>
+                {{ form.as_table }}
+            </table>
+
+            <input type="submit" value="Submit"/>
+        </form>
+
+    </body>
+</html>
