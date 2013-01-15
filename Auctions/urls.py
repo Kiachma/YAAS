@@ -8,7 +8,8 @@ from django.contrib import admin
 admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^(?P<auction_id>\d+)/$', views.detail , name='detail'),
-    url(r'^(?P<auction_id>\d+)/save/$', views.save , name='save'),
+    url(r'^(?P<auction_id>None|\d+)/$', views.detail , name='detail'),
+    url(r'^(?P<auction_id>None|\d+)/delete$', views.delete , name='delete'),
+    url(r'^(?P<auction_id>None|\d+)/save/$', views.save , name='save'),
 
 )

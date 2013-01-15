@@ -2,9 +2,13 @@
 {% if latest_auction_list %}
     <ul>
         {% for auction in latest_auction_list %}
-            <li><a href="{% url auctions:detail auction.id %}">{{ auction.name }}</a></li>
+            <li>
+                <a href="{% url auctions:detail auction.id %}">{{ auction.name }}</a>
+                <a href="{% url auctions:delete auction.id %}">Remove </a>
+            </li>
         {% endfor %}
     </ul>
 {% else %}
     <p>No auctions are available.</p>
 {% endif %}
+<a href="None/">Add new auction </a>
