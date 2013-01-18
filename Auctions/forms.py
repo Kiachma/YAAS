@@ -4,3 +4,4 @@ from Auctions.models import Auction
 class AuctionForm(ModelForm):
     class Meta:
         model = Auction
+        fields = ('name', 'category')

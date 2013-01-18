@@ -1,8 +1,7 @@
-<html>
-    <head>
-        <title>{{ auction.category }} - {{ auction }}</title>
-    </head>
-    <body>
+{% extends "base.html" %}
+
+{% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
+{% block content %}
         <h1><a href="{% url auctions:index%}">{{ auction.category }}</a> - {{ auction }}</h1>
 
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -18,5 +17,4 @@
             <input type="submit" value="Submit"/>
         </form>
 
-    </body>
-</html>
+{% endblock %}

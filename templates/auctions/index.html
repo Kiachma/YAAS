@@ -1,4 +1,7 @@
+{% extends "base.html" %}
 
+{% block title %}Auction list{% endblock %}
+{% block content %}
 {% if latest_auction_list %}
     <ul>
         {% for auction in latest_auction_list %}
@@ -12,3 +15,4 @@
     <p>No auctions are available.</p>
 {% endif %}
 <a href="None/">Add new auction </a>
+{% endblock %}

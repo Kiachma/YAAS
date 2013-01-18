@@ -15,6 +15,7 @@ def index(request):
 def detail(request, auction_id):
     if auction_id ==u'None':
         auction=Auction()
+        auction.seller=request.user
     else:
         auction = Auction.objects.get(pk=auction_id)
     form = AuctionForm(instance=auction)
@@ -32,7 +33,7 @@ def save(request, auction_id):
             return HttpResponseRedirect('/auctions/%s/' %form.instance.id)
     else:
         form = AuctionForm
-        c={'form': form}
+    c={'form': form}
     return render_to_response('auctions/detail.html',c , RequestContext(request))
 
 def delete(request, auction_id):

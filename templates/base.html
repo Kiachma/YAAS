@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>{% block title %}Base{% endblock %}</title>
+</head>
+{% load url from future %}
+<body>
+<div id="topbar">
+    {% block topbar %}
+        {% if user.is_authenticated %}
+            <a href="{% url 'user:index' user_id=user.id %}">Edit profile details</a>
+            <a href="{% url 'user:logout' %}">Logout</a>
+        {% else %}
+            <form action="{% url 'user:login'   %}" method="post">{% csrf_token %}
+            <input type='text' name="username">
+            <input type='password' name="password">
+            <input type="submit" value="Login "/>
+            </form>
+            <a href="{% url 'user:index' user_id='None' %}">Register</a>
+        {% endif %}
+
+    {% endblock %}
+</div>
+
+<div id="content">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
