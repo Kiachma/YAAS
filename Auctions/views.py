@@ -4,12 +4,9 @@ from Auctions.models import Auction
 from Auctions.forms import AuctionForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 
-def index(request):
-    latest_auction_list = Auction.objects.order_by('created')[:5]
-    context = {'latest_auction_list': latest_auction_list}
-    return render(request, 'auctions/index.html', context)
 
 
 def detail(request, auction_id):
@@ -29,6 +26,9 @@ def save(request, auction_id):
             a = Auction.objects.get(pk=auction_id)
             form = AuctionForm(request.POST,instance=a)
         if form.is_valid():
+            if form.instance.id is None:
+                send_mail('Subject here', 'Here is the message.', 'from@example.com',
+                    ['to@example.com'], fail_silently=False)
             form.save()
             return HttpResponseRedirect('/auctions/%s/' %form.instance.id)
     else:
@@ -39,4 +39,4 @@ def save(request, auction_id):
 def delete(request, auction_id):
     auction=Auction.objects.get(pk=auction_id)
     Auction.delete(auction)
-    return HttpResponseRedirect('/auctions/')
+    return HttpResponseRedirect(reverse('index'))

@@ -1,0 +1,9 @@
+{% load url from future %}
+Categories:
+<a href="/">All</a>
+{% for category in category_list %}
+    <a href="/{{category.id }}/">{{ category.name }}</a>
+{% endfor %}
+
+<br/>
+<br/>

@@ -21,10 +21,10 @@ def auth_login(request):
          a=1
     else:
         a=1
-    return HttpResponseRedirect(reverse('auctions:index'))
+    return HttpResponseRedirect(reverse('index'))
 def auth_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('auctions:index'))
+    return HttpResponseRedirect(reverse('index'))
 
 def index(request, user_id):
     if user_id ==u'None':
@@ -44,8 +44,10 @@ def save(request, user_id):
             user = User.objects.get(pk=user_id)
             form = UserForm(request.POST,instance=user)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('user:index' ,args=(form.instance.id,)))
+            user = form.instance
+            user.set_password(request.POST.get('password'))
+            user.save()
+            return HttpResponseRedirect(reverse('user:index' ,args=(user.id,)))
     else:
         form = UserForm
     c={'form': form}
