@@ -13,15 +13,6 @@ def make_custom_datefield(f):
 
 class AuctionForm(ModelForm):
     formfield_callback = make_custom_datefield
-    def __init__(self, *args, **kwargs):
-        super(AuctionForm, self).__init__(*args, **kwargs)
-        self.fields['seller'].widget.attrs['readonly'] = True
-        if self.instance.id:
-            self.fields['category'].widget.attrs['readonly'] = True
-            self.fields['name'].widget.attrs['readonly'] = True
-            self.fields['deadline'].widget.attrs['readonly'] = True
-            self.fields['min_price'].widget.attrs['readonly'] = True
-
     class Meta:
         model = Auction
-        fields = ('name', 'seller','category','description','deadline','min_price')
+        fields = ('name','seller','category','description','deadline','min_price')

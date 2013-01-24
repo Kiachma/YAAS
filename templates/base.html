@@ -25,8 +25,7 @@
             <ul>
                 {% for auction in latest_auction_list %}
                     <li>
-                        <a href="{% url 'auctions:detail' auction.id %}">{{ auction.name }}</a>
-                        <a href="{% url 'auctions:delete' auction.id %}">Remove </a>
+                        <a href="{% url 'auctions:view' auction.id %}">{{ auction.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -34,7 +33,7 @@
             <p>No auctions are available.</p>
         {% endif %}
         {% if user.is_authenticated %}
-            <a href={% url 'auctions:detail' 'None' %}>Add new auction </a>
+            <a href={% url 'auctions:edit' 'None' %}>Add new auction </a>
         {% endif %}
     {% endblock %}
 </div>

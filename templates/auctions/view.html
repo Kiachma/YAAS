@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
+{% block content %}
+        <h1><a href="{% url index%}">{{ auction.category }}</a> - {{ auction }}</h1>
+
+         {{ auction.name}}
+         <a href="{% url auctions:edit auction.id%}">edit</a>
+    <a href="{% url auctions:delete auction.id %}">Remove </a>
+{% endblock %}
