@@ -15,4 +15,4 @@ class AuctionForm(ModelForm):
     formfield_callback = make_custom_datefield
     class Meta:
         model = Auction
-        fields = ('name','seller','category','description','deadline','min_price')
+        fields = ('name','category','description','deadline','min_price')

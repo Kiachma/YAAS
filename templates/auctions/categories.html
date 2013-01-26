@@ -1,9 +1,15 @@
 {% load url from future %}
-Categories:
+<ul>
+    <li>
 <a href="/">All</a>
+    </li>
 {% for category in category_list %}
+    <li>
     <a href="/{{category.id }}/">{{ category.name }}</a>
+    </li>
 {% endfor %}
-
-<br/>
-<br/>
+<form action="{% url 'search'%}" id="search">
+    <input type='text' name="q">
+    <input type="submit" value="Search "/>
+</form>
+</ul>

@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^(?P<auction_id>None|\d+)/$', views.view , name='view'),
     url(r'^(?P<auction_id>None|\d+)/delete$', views.delete , name='delete'),
     url(r'^(?P<auction_id>None|\d+)/save/$', views.save , name='save'),
+    url(r'^(?P<auction_id>None|\d+)/bid/$', views.bid , name='save'),
 
 )

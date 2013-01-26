@@ -3,39 +3,68 @@
 <head>
     <title>{% block title %}Base{% endblock %}</title>
 </head>
-
-
-
-
+<LINK href="{{ STATIC_URL }}css/base.css" rel="stylesheet" type="text/css">
+<LINK href="{{ STATIC_URL }}css/layout.css" rel="stylesheet" type="text/css">
+<LINK href="{{ STATIC_URL }}css/skeleton.css" rel="stylesheet" type="text/css">
 
 {% load url from future %}
 {% load loadCategories %}
 <body>
-<div id="topbar">
+<div class="container">
+
 
     {% block topbar %}
-        {% getCategories %}
-        {% include "user/auth.html" %}
-    {% endblock %}
-</div>
 
-<div id="content">
-    {% block content %}
-        {% if latest_auction_list %}
-            <ul>
-                {% for auction in latest_auction_list %}
-                    <li>
-                        <a href="{% url 'auctions:view' auction.id %}">{{ auction.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No auctions are available.</p>
-        {% endif %}
-        {% if user.is_authenticated %}
-            <a href={% url 'auctions:edit' 'None' %}>Add new auction </a>
-        {% endif %}
+        <div id="header" class="twelve columns">
+            <h1>YAAS</h1>
+
+            <h2>Yet Another Auction Site</h2>
+        </div>
+        <div id="auth" class="four columns">
+            {% include "user/auth.html" %}
+        </div>
     {% endblock %}
+    <div id="content" class="twelve columns">
+
+        {% block content %}
+
+            {% if latest_auction_list %}
+                <h4>Newest auctions</h4>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Auction title</th>
+                        <th>Category</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for auction in latest_auction_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'auctions:view' auction.id %}">{{ auction.name }}</a>
+                            </td>
+                            <td>{{ auction.category }}</td>
+                            <td>{{ auction.created }}</td>
+                            <td>{{ auction.deadline }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No auctions are available.</p>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <a href={% url 'auctions:edit' 'None' %}>Add new auction </a>
+            {% endif %}
+        {% endblock %}
+    </div>
+    <div id="rightmenu" class="four columns">
+        {% getCategories %}
+    </div>
+    <div id="footer" class="sixteen columns">
+    </div>
 </div>
 </body>
 </html>

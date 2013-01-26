@@ -8,5 +8,5 @@ urlpatterns = patterns('',
     url(r'^users/', include('User.urls',namespace='user')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$|(?P<category_id>None|\d+)/$', views.base ,name='index'),
-
+    url(r'^search/', views.search ,name="search"),
 )

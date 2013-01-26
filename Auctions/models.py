@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 from datetime import datetime
 from Auctions.datafiles import AuctionStatus
-
+from django.db.models import Max
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -35,6 +35,10 @@ class Auction(models.Model):
 
     def __unicode__(self):
         return self.name
+    def getLatestBid(self):
+       return self.bid_set.aggregate(Max('bid'))
+
+
 
 class Bid(models.Model):
     auction= models.ForeignKey(Auction)
