@@ -8,6 +8,9 @@
             <h5>Title</h5> {{ auction.name }}
         </li>
         <li>
+            <h5>Status</h5> {{ auction.getStatusString }}
+        </li>
+        <li>
             <h5>Category</h5> {{ auction.category }}
         </li>
         <li>
@@ -25,20 +28,20 @@
     </ul>
     <ul>
         <h5>Bids</h5>
-    {% for bid in auction.bid_set.all %}
-        {% if bid %}
-            <li>{{ bid.bid }} : {{ bid.user.get_full_name }}</li>
-        {% endif %}
-    {% endfor %}
+        {% for bid in auction.bid_set.all %}
+            {% if bid %}
+                <li>{{ bid.bid }} : {{ bid.user.get_full_name }}</li>
+            {% endif %}
+        {% endfor %}
     </ul>
     {% if user == auction.seller %}
         <a href="{% url auctions:edit auction.id %}">edit</a>
         <a href="{% url auctions:delete auction.id %}">Remove </a>
-    {% else %}
+    {% elif not auction.banned %}
         <form action="/auctions/{{ auction.id }}/bid/" method="post">{% csrf_token %}
             {% csrf_token %}
             <label for="bid">Bid:</label>
-          <input type="text" id="bid" name="bid">
+            <input type="text" id="bid" name="bid">
 
             <input type="submit" value="Bid"/>
         </form>

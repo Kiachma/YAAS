@@ -2,9 +2,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from datetime import datetime
+from django.utils import timezone
 from Auctions.datafiles import AuctionStatus
 from django.db.models import Max
+from django import forms
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -21,22 +22,36 @@ class Auction(models.Model):
     description = models.CharField(max_length=200)
     min_price = models.DecimalField(decimal_places=2,max_digits=10)
     deadline = models.DateTimeField()
-    status = models.PositiveSmallIntegerField()
+    status = models.PositiveSmallIntegerField(null=True)
+    banned = models.NullBooleanField(null=True)
+    def __unicode__(self):
+        return self.name
 
     def getStatus(self):
-        if self.status == AuctionStatus.banned:
+        if self.banned:
             return AuctionStatus.banned
         if self.status == AuctionStatus.adjudicated:
             return AuctionStatus.adjudicated
-        elif self.deadline<datetime.now():
+        elif self.deadline>timezone.now():
             return AuctionStatus.active
         else:
             return AuctionStatus.due
 
-    def __unicode__(self):
-        return self.name
+    def getStatusString(self):
+        return AuctionStatus.getName(self.getStatus())
+
+
     def getLatestBid(self):
-       return self.bid_set.aggregate(Max('bid'))
+        bid= self.bid_set.annotate(Max('bid'))
+        if bid.count()==0:
+            return None
+        return bid[0]
+
+    def clean_deadline(self):
+        data = self.cleaned_data['deadline']
+        if data<timezone.now():
+            raise forms.ValidationError("Deadline has to be a date in the future")
+        return data
 
 
 
@@ -46,7 +61,6 @@ class Bid(models.Model):
     bid= models.DecimalField(max_digits=9 ,decimal_places=2)
     def __unicode__(self):
         return self.user.first_name + ' '+ self.user.last_name + ' - ' +str(self.bid)
-
 
 
 

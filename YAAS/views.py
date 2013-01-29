@@ -5,12 +5,13 @@ import re
 
 from django.db.models import Q
 
+
 def base(request,category_id):
     category_list = Category.objects.order_by('name')
     if category_id is None or category_id==u'None':
-        latest_auction_list = Auction.objects.order_by('created')
+        latest_auction_list = Auction.objects.filter(~Q(banned=True)).order_by('created')
     else:
-        latest_auction_list = Auction.objects.filter(category=category_id).order_by('created')
+        latest_auction_list = Auction.objects.filter(Q(category=category_id)&~Q(banned=True)).order_by('created')
     context = {'category_list': category_list,'latest_auction_list': latest_auction_list}
     return render(request, 'base.html', context)
 
@@ -24,7 +25,7 @@ def search(request):
 
         entry_query = get_query(query_string, ['description','name',])
 
-        latest_auction_list = Auction.objects.filter(entry_query).order_by('created')
+        latest_auction_list = Auction.objects.filter(entry_query &~Q(banned=True)).order_by('created')
         category_list = Category.objects.order_by('name')
     else:
         latest_auction_list = Auction.objects.order_by('created')

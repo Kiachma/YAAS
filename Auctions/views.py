@@ -34,12 +34,12 @@ def save(request, auction_id):
             a = Auction.objects.get(pk=auction_id)
             form = AuctionForm(request.POST, instance=a)
         if form.is_valid():
-            if form.instance.id is None:
-                send_mail('Subject here', 'Here is the message.', 'from@example.com',
-                    ['to@example.com'], fail_silently=False)
             auction = form.save(commit=False)
-            auction.status = AuctionStatus.active
             auction.seller = request.user
+            if form.instance.id is None:
+                send_mail('Auction: '+ auction.name +' created' , 'Auction INFO', 'YAAS@YAAS.fi',
+                    [auction.seller.email], fail_silently=False)
+                auction.status=0
             auction.save()
             return HttpResponseRedirect('/auctions/%s/' % form.instance.id)
     else:
