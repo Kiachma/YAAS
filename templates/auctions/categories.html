@@ -1,11 +1,12 @@
 {% load url from future %}
+<h4>Categories</h4>
 <ul>
     <li>
 <a href="/">All</a>
     </li>
 {% for category in category_list %}
     <li>
-    <a href="/{{category.id }}/">{{ category.name }}</a>
+    <a href="/{{category.id}}">{{ category.name }}</a>
     </li>
 {% endfor %}
 <form action="{% url 'search'%}" id="search">

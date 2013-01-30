@@ -1,9 +1,7 @@
 from django.template import RequestContext
-from django.shortcuts import render
 from User.forms import UserForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -21,7 +19,8 @@ def auth_login(request):
          a=1
     else:
         a=1
-    return HttpResponseRedirect(reverse('index'))
+    redirect_to = request.POST.get('next', '')
+    return HttpResponseRedirect(redirect_to)
 def auth_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))

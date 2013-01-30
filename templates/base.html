@@ -9,6 +9,7 @@
 
 {% load url from future %}
 {% load loadCategories %}
+{% load i18n %}
 <body>
 <div class="container">
 
@@ -20,9 +21,30 @@
 
             <h2>Yet Another Auction Site</h2>
         </div>
+
         <div id="auth" class="four columns">
-            {% include "user/auth.html" %}
+            <h4>Authentication</h4>
+            <div id="auth2">
+                {% include "user/auth.html" %}
+            </div>
+            <div id="language">
+                <h4>Languages</h4>
+                <form action="/i18n/setlang/" method="post">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ redirect_to }}"/>
+                    <select name="language">
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}">{{ language.name_local }} ({{ language.code }})</option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit" value="Change language"/>
+                </form>
+            </div>
         </div>
+
+
+
     {% endblock %}
     <div id="content" class="twelve columns">
 

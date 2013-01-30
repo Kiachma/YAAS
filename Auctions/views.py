@@ -1,14 +1,17 @@
+import bzrlib.commit
 from django.template import RequestContext
 from Auctions.models import Auction, Bid
-from Auctions.forms import AuctionForm
+from Auctions.forms import AuctionForm, BidForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.forms.models import modelform_factory
-from Auctions.datafiles import AuctionStatus
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import timedelta
 
-
+@login_required(login_url='/')
 def edit(request, auction_id):
     if auction_id == u'None':
         auction = Auction()
@@ -23,9 +26,10 @@ def edit(request, auction_id):
 
 def view(request, auction_id):
     auction = Auction.objects.get(pk=auction_id)
-    return render_to_response('auctions/view.html', {'auction': auction}, RequestContext(request))
+    form = BidForm()
+    return render_to_response('auctions/view.html', {'form':form , 'auction': auction}, RequestContext(request))
 
-
+@login_required(login_url='/')
 def save(request, auction_id):
     if request.method == 'POST':
         if auction_id == u'None':
@@ -41,27 +45,38 @@ def save(request, auction_id):
                     [auction.seller.email], fail_silently=False)
                 auction.status=0
             auction.save()
-            return HttpResponseRedirect('/auctions/%s/' % form.instance.id)
+            request.session['auction'] = auction
+            return render_to_response('auctions/confirm.html', {}, RequestContext(request))
     else:
         form = AuctionForm
     c = {'form': form}
-    return render_to_response('auctions/view.html', c, RequestContext(request))
+    return render_to_response('auctions/edit.html', c, RequestContext(request))
 
 
+@login_required(login_url='/')
+def confirm(request):
+    auction= request.session.get('auction')
+    auction.save()
+    return render_to_response('auctions/view.html', {'from':BidForm(),'auction': auction}, RequestContext(request))
+
+@login_required(login_url='/')
 def delete(request, auction_id):
     auction = Auction.objects.get(pk=auction_id)
     Auction.delete(auction)
     return HttpResponseRedirect(reverse('index'))
 
-
+@login_required(login_url='/')
 def bid(request, auction_id):
     a = Auction.objects.get(pk=auction_id)
-    if a.getLatestBid()>request.POST.get('bid'):
-        return HttpResponseRedirect('/auctions/%s/' % auction_id)
-    bid = Bid()
-    bid.auction = a
-    bid.bid = request.POST.get('bid')
+    bid= Bid()
+    bid.auction=a
     bid.user=request.user
-    bid.save()
-    return HttpResponseRedirect('/auctions/%s/' % auction_id)
+    form = BidForm(request.POST,instance=bid)
+    if form.is_valid():
+        form.save()
+        if a.deadline-timezone.now()<timedelta(minutes=5):
+            auction_id.deadline+=timedelta(minutes=5)
+        return HttpResponseRedirect((reverse('auctions:view',args=(a.id,))))
+    return render_to_response('auctions/view.html', {'form':form,'auction': a}, RequestContext(request))
+
 

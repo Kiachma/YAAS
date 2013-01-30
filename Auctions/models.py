@@ -49,8 +49,8 @@ class Auction(models.Model):
 
     def clean_deadline(self):
         data = self.cleaned_data['deadline']
-        if data<timezone.now():
-            raise forms.ValidationError("Deadline has to be a date in the future")
+        if ~(data>timezone.now() (hours = 72)):
+            raise forms.ValidationError("The duration of the auction has to be at least 72h")
         return data
 
 
@@ -61,6 +61,7 @@ class Bid(models.Model):
     bid= models.DecimalField(max_digits=9 ,decimal_places=2)
     def __unicode__(self):
         return self.user.first_name + ' '+ self.user.last_name + ' - ' +str(self.bid)
+
 
 
 

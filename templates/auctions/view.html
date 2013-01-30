@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-
+{% load url from future %}
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
     <ul>
@@ -35,13 +35,16 @@
         {% endfor %}
     </ul>
     {% if user == auction.seller %}
-        <a href="{% url auctions:edit auction.id %}">edit</a>
-        <a href="{% url auctions:delete auction.id %}">Remove </a>
-    {% elif not auction.banned %}
-        <form action="/auctions/{{ auction.id }}/bid/" method="post">{% csrf_token %}
+        <a href="{% url 'auctions:edit' auction.id %}">edit</a>
+        <a href="{% url 'auctions:delete' auction.id %}">Remove </a>
+    {% elif auction.getLatestBid.user == request.user %}
+        You've allredy got the highest bid
+    {% elif not auction.banned and user.is_authenticated %}
+        <form action="{% url 'auctions:bid' auction.id %}" method="post">{% csrf_token %}
             {% csrf_token %}
-            <label for="bid">Bid:</label>
-            <input type="text" id="bid" name="bid">
+            <table>
+                {{ form.as_p }}
+            </table>
 
             <input type="submit" value="Bid"/>
         </form>

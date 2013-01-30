@@ -161,6 +161,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
     'YAAS.getRequestUser.user',
+    "django.core.context_processors.request",
     )
 BROKER_URL = 'django://'
 

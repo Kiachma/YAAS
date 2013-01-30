@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load url from future %}
 
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
@@ -11,9 +11,9 @@
             $( ".datePicker" ).datepicker();
         });
     </script>
-    <h1><a href="{% url index%}">{{ auction.category }}</a> - {{ auction }}</h1>
+    <h1><a href="{% url 'index'%}">{{ auction.category }}</a> - {{ auction }}</h1>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    <form action="/auctions/{{ auction.id }}/save/" method="post">{% csrf_token %}
+    <form action="{% url 'auctions:save' auction.id%}" method="post">{% csrf_token %}
         {% csrf_token %}
 
         <table>
