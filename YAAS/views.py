@@ -1,9 +1,13 @@
 __author__ = 'eaura'
-from django.shortcuts import render
-from Auctions.models import Category, Auction
 import re
 
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from YAAS import DBFixture
+
+from Auctions.models import Category, Auction
 
 
 def base(request,category_id):
@@ -69,3 +73,9 @@ def get_query(query_string, search_fields):
         else:
             query = query & or_query
     return query
+
+
+def populateDb(request):
+    pop =DBFixture.Populator()
+    pop.populate()
+    return HttpResponseRedirect(reverse('index'))

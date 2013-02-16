@@ -1,6 +1,7 @@
 {% load url from future %}
-<h4>Categories</h4>
-<ul>
+{% load i18n %}
+<h4>{% trans "Categories"%}</h4>
+
     <li>
 <a href="/">All</a>
     </li>
@@ -11,6 +12,6 @@
 {% endfor %}
 <form action="{% url 'search'%}" id="search">
     <input type='text' name="q">
-    <input type="submit" value="Search "/>
+    <input class="btn" type="submit" value={% trans "Search "%}/>
 </form>
-</ul>
+

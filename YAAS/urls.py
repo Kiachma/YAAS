@@ -10,6 +10,6 @@ urlpatterns = patterns('',
     url(r'^$|(?P<category_id>None|\d+)/$', views.base ,name="index"),
     url(r'^search/', views.search ,name="search"),
     (r'^i18n/', include('django.conf.urls.i18n')),
-
+    url(r'^populateDb/', views.populateDb ,name="populateDb"),
 
 )

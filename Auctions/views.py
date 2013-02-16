@@ -10,6 +10,8 @@ from django.forms.models import modelform_factory
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import timedelta
+from django.utils.translation import ugettext as _
+
 
 @login_required(login_url='/')
 def edit(request, auction_id):
@@ -41,7 +43,7 @@ def save(request, auction_id):
             auction = form.save(commit=False)
             auction.seller = request.user
             if form.instance.id is None:
-                send_mail('Auction: '+ auction.name +' created' , 'Auction INFO', 'YAAS@YAAS.fi',
+                send_mail(_("Auction: ")+ auction.name +_(' created' ), _('Auction INFO'), 'YAAS@YAAS.fi',
                     [auction.seller.email], fail_silently=False)
                 auction.status=0
             auction.save()

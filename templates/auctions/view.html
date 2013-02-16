@@ -3,51 +3,56 @@
 {% load url from future %}
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
-    <ul>
-        <li>
-            <h5>Title</h5> {{ auction.name }}
-        </li>
-        <li>
-            <h5>Status</h5> {{ auction.getStatusString }}
-        </li>
-        <li>
-            <h5>Category</h5> {{ auction.category }}
-        </li>
-        <li>
-            <h5>Price</h5> {{ auction.min_price }}
-        </li>
-        <li>
-            <h5>Start date</h5> {{ auction.created }}
-        </li>
-        <li>
-            <h5>End date</h5> {{ auction.deadline }}
-        </li>
-        <li>
-            <h5>Auction owner</h5> {{ auction.seller.get_full_name }}
-        </li>
-    </ul>
-    <ul>
-        <h5>Bids</h5>
-        {% for bid in auction.bid_set.all %}
-            {% if bid %}
-                <li>{{ bid.bid }} : {{ bid.user.get_full_name }}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    {% if user == auction.seller %}
-        <a href="{% url 'auctions:edit' auction.id %}">edit</a>
-        <a href="{% url 'auctions:delete' auction.id %}">Remove </a>
-    {% elif auction.getLatestBid.user == request.user %}
-        You've allredy got the highest bid
-    {% elif not auction.banned and user.is_authenticated %}
-        <form action="{% url 'auctions:bid' auction.id %}" method="post">{% csrf_token %}
-            {% csrf_token %}
-            <table>
-                {{ form.as_p }}
-            </table>
+    <fieldset>
+        <legend>Information</legend>
+        <ul class="unstyled">
+            <li>
+                <h5>Title</h5> {{ auction.name }}
+            </li>
+            <li>
+                <h5>Status</h5> {{ auction.getStatusString }}
+            </li>
+            <li>
+                <h5>Category</h5> {{ auction.category }}
+            </li>
+            <li>
+                <h5>Price</h5> {{ auction.min_price }}
+            </li>
+            <li>
+                <h5>Start date</h5> {{ auction.created }}
+            </li>
+            <li>
+                <h5>End date</h5> {{ auction.deadline }}
+            </li>
+            <li>
+                <h5>Auction owner</h5> {{ auction.seller.get_full_name }}
+            </li>
+        </ul>
+    </fieldset>
+    <fieldset>
+        <legend>Bids</legend>
+        <ul class="unstyled">
+            <h5>Bids</h5>
+            {% for bid in auction.bid_set.all %}
+                {% if bid %}
+                    <li>{{ bid.bid }} : {{ bid.user.get_full_name }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {% if user == auction.seller %}
+            <a class="btn" href="{% url 'auctions:edit' auction.id %}">edit</a>
+            <a class="btn btn-danger" href="{% url 'auctions:delete' auction.id %}">Remove </a>
+        {% elif auction.getLatestBid.user == request.user %}
+            You've allredy got the highest bid
+        {% elif not auction.banned and user.is_authenticated %}
+            <form action="{% url 'auctions:bid' auction.id %}" method="post">{% csrf_token %}
+                {% csrf_token %}
+                <table>
+                    {{ form.as_p }}
+                </table>
 
-            <input type="submit" value="Bid"/>
-        </form>
-    {% endif %}
-
+                <input class="btn" type="submit" value="Bid"/>
+            </form>
+        {% endif %}
+    </fieldset>
 {% endblock %}

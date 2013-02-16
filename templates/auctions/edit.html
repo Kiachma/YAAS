@@ -11,8 +11,11 @@
             $( ".datePicker" ).datepicker();
         });
     </script>
-    <h1><a href="{% url 'index'%}">{{ auction.category }}</a> - {{ auction }}</h1>
+    <h1></h1>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <fieldset>
+    <legend><a href="{% url 'index'%}">{{ auction.category }}</a> - {{ auction }}</legend>
+
     <form action="{% url 'auctions:save' auction.id%}" method="post">{% csrf_token %}
         {% csrf_token %}
 
@@ -20,7 +23,7 @@
             {{ form.as_p }}
         </table>
 
-        <input type="submit" value="Submit"/>
+        <input type="submit" class="btn" value="Submit"/>
     </form>
-
+    </fieldset>
 {% endblock %}

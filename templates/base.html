@@ -1,35 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>{% block title %}Base{% endblock %}</title>
-</head>
-<LINK href="{{ STATIC_URL }}css/base.css" rel="stylesheet" type="text/css">
-<LINK href="{{ STATIC_URL }}css/layout.css" rel="stylesheet" type="text/css">
-<LINK href="{{ STATIC_URL }}css/skeleton.css" rel="stylesheet" type="text/css">
-
 {% load url from future %}
 {% load loadCategories %}
 {% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>YAAS | {% block title %}Home{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
+    <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="{{ STATIC_URL }}js/jquery-1.8.1.min.js" type="text/javascript"></script>
+    {% block extrahead %}
+    {% endblock %}
+    <script type="text/javascript">
+        $(function () {
+            {% block jquery %}
+            {% endblock %}
+        });
+    </script>
+</head>
+
 <body>
-<div class="container">
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/">Yet Another Auction Site</a>
+
+            <div class="nav-collapse collapse">
 
 
-    {% block topbar %}
-
-        <div id="header" class="twelve columns">
-            <h1>YAAS</h1>
-
-            <h2>Yet Another Auction Site</h2>
-        </div>
-
-        <div id="auth" class="four columns">
-            <h4>Authentication</h4>
-            <div id="auth2">
-                {% include "user/auth.html" %}
-            </div>
-            <div id="language">
-                <h4>Languages</h4>
-                <form action="/i18n/setlang/" method="post">
+                <form action="{% url 'set_language' %}" method="post" style="display: inline" class="form-inline">
                     {% csrf_token %}
                     <input name="next" type="hidden" value="{{ redirect_to }}"/>
                     <select name="language">
@@ -38,55 +59,73 @@
                             <option value="{{ language.code }}">{{ language.name_local }} ({{ language.code }})</option>
                         {% endfor %}
                     </select>
-                    <input type="submit" value="Change language"/>
+                    <input class="btn" type="submit" value="Change"/>
                 </form>
-            </div>
+
+
+                {% include "user/auth.html" %}</div>
+            <!--/.nav-collapse -->
         </div>
-
-
-
-    {% endblock %}
-    <div id="content" class="twelve columns">
-
-        {% block content %}
-
-            {% if latest_auction_list %}
-                <h4>Newest auctions</h4>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Auction title</th>
-                        <th>Category</th>
-                        <th>Start date</th>
-                        <th>End date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for auction in latest_auction_list %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'auctions:view' auction.id %}">{{ auction.name }}</a>
-                            </td>
-                            <td>{{ auction.category }}</td>
-                            <td>{{ auction.created }}</td>
-                            <td>{{ auction.deadline }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No auctions are available.</p>
-            {% endif %}
-            {% if user.is_authenticated %}
-                <a href={% url 'auctions:edit' 'None' %}>Add new auction </a>
-            {% endif %}
-        {% endblock %}
-    </div>
-    <div id="rightmenu" class="four columns">
-        {% getCategories %}
-    </div>
-    <div id="footer" class="sixteen columns">
     </div>
 </div>
+
+<div id="messages">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <a class="close" data-dismiss="alert">×</a>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    {% getCategories %}
+                    <a href="{% url 'populateDb'  %}" class="btn">Populate DB</a>
+                </ul>
+            </div>
+        </div>
+        <div class="span10">
+            {% block content %}
+                {% if latest_auction_list %}
+                    <h4>Newest auctions</h4>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Auction title</th>
+                            <th>Category</th>
+                            <th>Start date</th>
+                            <th>End date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for auction in latest_auction_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'auctions:view' auction.id %}">{{ auction.name }}</a>
+                                </td>
+                                <td>{{ auction.category }}</td>
+                                <td>{{ auction.created }}</td>
+                                <td>{{ auction.deadline }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No auctions are available.</p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <a href={% url 'auctions:edit' 'None' %}>Add new auction </a>
+                {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+<!-- /container -->
 </body>
 </html>

@@ -91,6 +91,7 @@ TEMPLATE_LOADERS = (
     )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -167,3 +168,10 @@ BROKER_URL = 'django://'
 
 CELERY_TIMEZONE = 'Europe/Helsinki'
 USE_TZ = True
+gettext = lambda s: s
+LANGUAGE_CODE ='sv'
+LANGUAGES = (
+    ('fi', gettext('Finnish')),
+    ('sv', gettext('Swedish')),
+    ('en', gettext('English')),
+)
