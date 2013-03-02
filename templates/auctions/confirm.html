@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load url from future %}
-
+{% load i18n %}
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
     <form action="{% url 'auctions:confirm'%}" method="post">{% csrf_token %}
         {% csrf_token %}
-        <label for="confirm">Create Auction</label>
+        <label for="confirm">{% trans "Create auction"%}</label>
         <input type='checkbox' name="confirm" id=confirm>
         <input type="submit" value="Submit"/>
     </form>

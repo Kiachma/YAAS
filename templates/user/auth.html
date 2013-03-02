@@ -1,19 +1,20 @@
 {% load url from future %}
+{% load i18n %}
 {% if user.is_authenticated %}
     <div class="pull-right">
-        <a class="btn" href="{% url 'user:index' user_id=user.id %}">Edit profile details</a>
-        <a class="btn" href="{% url 'user:logout' %}?next={{ request.path }}">Logout</a>
+        <a class="btn" href="{% url 'user:index' user_id=user.id %}">{% trans "Edit profile details"%}</a>
+        <a class="btn" href="{% url 'user:logout' %}?next={{ request.path }}">{% trans "Log out"%}</a>
     </div>
 {% else %}
     <form action="{% url 'user:login' %}" method="post" style="display: inline"
           class="form-inline pull-right">{% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
 
-        <input type='text' placeholder="Username" name="username" id=username>
+        <input type='text' placeholder="{% trans "Username"%}" name="username" id=username>
 
-        <input type='password' placeholder="Password" name="password">
-        <input type="submit" value="Login " class="btn">
-        <a class="btn" href="{% url 'user:index' user_id='None' %}?next={{ request.path }}">Register</a>
+        <input type='password' placeholder="{% trans "Password"%}" name="password">
+        <input type="submit" value="{% trans "Login"%}" class="btn">
+        <a class="btn" href="{% url 'user:index' user_id='None' %}?next={{ request.path }}">{% trans "Register"%}</a>
     </form>
 
 {% endif %}

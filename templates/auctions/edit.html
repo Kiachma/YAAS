@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
-
+{% load i18n %}
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -23,7 +23,7 @@
             {{ form.as_p }}
         </table>
 
-        <input type="submit" class="btn" value="Submit"/>
+        <input type="submit" class="btn" value={% trans "Submit"%}/>
     </form>
     </fieldset>
 {% endblock %}

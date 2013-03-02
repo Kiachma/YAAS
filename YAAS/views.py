@@ -5,8 +5,12 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from YAAS import DBFixture
+from django import http
+from django.utils.http import is_safe_url
+from django.conf import settings
+from django.utils.translation import check_for_language
 
+from YAAS import DBFixture
 from Auctions.models import Category, Auction
 
 
@@ -79,3 +83,20 @@ def populateDb(request):
     pop =DBFixture.Populator()
     pop.populate()
     return HttpResponseRedirect(reverse('index'))
+
+
+def changeLanguage(request):
+    next = request.REQUEST.get('next')
+    if not is_safe_url(url=next, host=request.get_host()):
+        next = request.META.get('HTTP_REFERER')
+        if not is_safe_url(url=next, host=request.get_host()):
+            next = '/'
+    response = http.HttpResponseRedirect(next)
+    if request.method == 'POST':
+        lang_code = request.POST.get('language', None)
+        if lang_code and check_for_language(lang_code):
+            if hasattr(request, 'session'):
+                request.session['django_language'] = lang_code
+            else:
+                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code)
+    return response
