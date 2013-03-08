@@ -19,12 +19,12 @@
         }
     </style>
     <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
-
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/tablesorter/jquery.tablesorter.js"></script>
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script src="{{ STATIC_URL }}js/jquery-1.8.1.min.js" type="text/javascript"></script>
     {% block extrahead %}
     {% endblock %}
     <script type="text/javascript">
@@ -32,6 +32,14 @@
             {% block jquery %}
             {% endblock %}
         });
+    </script>
+    <script >
+        $(document).ready(function()
+                {
+                    $("#auctionsTable").tablesorter();
+                }
+        );
+
     </script>
 </head>
 
@@ -82,7 +90,7 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span3">
+        <div class="span2">
             <div class="well sidebar-nav">
                 <ul class="nav nav-list">
                     {% getCategories %}
@@ -90,16 +98,21 @@
                 </ul>
             </div>
         </div>
-        <div class="span9">
+        <div class="span10">
             {% block content %}
+                {% if user.is_authenticated %}
+                    <a class="btn btn-large pull-right" href={% url 'auctions:edit' 'None' %}>Add new auction </a>
+                {% endif %}
                 {% if latest_auction_list %}
                     <h4>Newest auctions</h4>
-                    <table class="table table-hover">
+                    <table id="auctionsTable" class="table table-hover tablesorter">
                         <thead>
                         <tr>
                             <th>Auction title</th>
                             <th>Category</th>
-                            <th>Start date</th>
+                            <th>Min price</th>
+                            <th>Current bid</th>
+                            <th>Added</th>
                             <th>End date</th>
                         </tr>
                         </thead>
@@ -110,6 +123,8 @@
                                     <a href="{% url 'auctions:view' auction.id %}">{{ auction.name }}</a>
                                 </td>
                                 <td>{{ auction.category }}</td>
+                                <td>{{ auction.min_price }}</td>
+                                <td>{{ auction.getLatestBidSum }}</td>
                                 <td>{{ auction.created }}</td>
                                 <td>{{ auction.deadline }}</td>
                             </tr>
@@ -119,9 +134,7 @@
                 {% else %}
                     <p>No auctions are available.</p>
                 {% endif %}
-                {% if user.is_authenticated %}
-                    <a href={% url 'auctions:edit' 'None' %}>Add new auction </a>
-                {% endif %}
+
             {% endblock %}
         </div>
     </div>

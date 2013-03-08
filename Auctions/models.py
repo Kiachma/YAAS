@@ -6,6 +6,7 @@ from django.utils import timezone
 from Auctions.datafiles import AuctionStatus
 from django.db.models import Max
 from django import forms
+from django.utils.translation import ugettext as _
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -26,6 +27,13 @@ class Auction(models.Model):
     banned = models.NullBooleanField(null=True)
     def __unicode__(self):
         return self.name
+    def getAuctionInfo(self):
+        return _('\n Auction name:')+ self.name + \
+               _( '\n Description: ') +self.description+\
+               _('\n Category: '+self.category.name)+\
+               _('\n Min price: ')+str(self.min_price)+\
+               _('\n Deadline: ')+ str(self.deadline)
+
 
     def getStatus(self):
         if self.banned:
@@ -47,6 +55,13 @@ class Auction(models.Model):
             return None
         return bid[0]
 
+
+    def getLatestBidSum(self):
+        bid= self.bid_set.annotate(Max('bid'))
+        if bid.count()==0:
+            return None
+        return bid[0].getLatestBidSum()
+
     def clean_deadline(self):
         data = self.cleaned_data['deadline']
         if ~(data>timezone.now() (hours = 72)):
@@ -60,7 +75,9 @@ class Bid(models.Model):
     user = models.ForeignKey(User)
     bid= models.DecimalField(max_digits=9 ,decimal_places=2)
     def __unicode__(self):
-        return self.user.first_name + ' '+ self.user.last_name + ' - ' +str(self.bid)
+        return str(self.bid)+ ' - ' +self.user.first_name + ' '+ self.user.last_name
+    def getLatestBidSum(self):
+        return str(self.bid)
 
 
 

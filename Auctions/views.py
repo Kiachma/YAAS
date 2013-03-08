@@ -43,10 +43,7 @@ def save(request, auction_id):
             auction = form.save(commit=False)
             auction.seller = request.user
             if form.instance.id is None:
-                send_mail(_("Auction: ")+ auction.name +_(' created' ), _('Auction INFO'), 'YAAS@YAAS.fi',
-                    [auction.seller.email], fail_silently=False)
                 auction.status=0
-            auction.save()
             request.session['auction'] = auction
             return render_to_response('auctions/confirm.html', {}, RequestContext(request))
     else:
@@ -59,6 +56,9 @@ def save(request, auction_id):
 def confirm(request):
     auction= request.session.get('auction')
     auction.save()
+    send_mail(_("Auction: ")+ auction.name +_(' created' ),auction.getAuctionInfo()
+                , 'YAAS@YAAS.fi',
+              [auction.seller.email], fail_silently=False)
     return render_to_response('auctions/view.html', {'from':BidForm(),'auction': auction}, RequestContext(request))
 
 @login_required(login_url='/')
