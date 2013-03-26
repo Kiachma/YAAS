@@ -7,6 +7,17 @@ from celery.schedules import crontab
 from celery.task import periodic_task
 
 # this will run every minute, see http://celeryproject.org/docs/reference/celery.task.schedules.html#celery.task.schedules.crontab
+def sendMails(auction):
+    send_mail('You won' + auction.name,
+              'Congratulations! You won auction ' + auction.name + '. Your winning bid was' + str(
+                  auction.getLatestBid().bid), 'YAAS@YAAS.fi',
+              [auction.getLatestBid().user.email], fail_silently=False)
+    for bid in auction.bid_set.all():
+        send_mail(auction.name + ' Resolved', 'Te auction' + auction.name+ ' has been resolved. The winner is ' +auction.getLatestBid().user.get_full_name(), 'YAAS@YAAS.fi',
+                  [bid.user.email], fail_silently=False)
+
+
+
 @periodic_task(run_every=crontab(hour="*", minute="*", day_of_week="*"))
 def updateAuctions():
     auctions = Auction.objects.filter(Q(status=AuctionStatus.due))
@@ -17,7 +28,6 @@ def updateAuctions():
             i += 1
             winner = auction.getLatestBid()
             if winner is not None:
-                send_mail('You won' +auction.name , 'Congratulations! You won auction ' +auction.name +'. Your winning bid was' + str(auction.getLatestBid().bid) , 'YAAS@YAAS.fi',
-                    [auction.getLatestBid().user.email], fail_silently=False)
+                sendMails(auction)
             auction.save()
     return i

@@ -3,6 +3,9 @@
 {% load url from future %}
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
+    {% if user.is_superuser %}
+        <a class="btn btn-danger" href="{% url 'auctions:ban' auction.id %}">{% trans "Ban Auction"%} </a>
+    {% endif %}
     <fieldset>
         <legend>{% trans "Information"%}</legend>
         <ul class="unstyled">
@@ -43,7 +46,7 @@
             <a class="btn" href="{% url 'auctions:edit' auction.id %}">{% trans "edit"%}</a>
             <a class="btn btn-danger" href="{% url 'auctions:delete' auction.id %}">{% trans "Remove"%} </a>
         {% elif auction.getLatestBid.user == request.user %}
-            {% trans "You've allredy got the highest bid"%}
+            {% trans "You've got the highest bid"%}
         {% elif not auction.banned and user.is_authenticated %}
             <form action="{% url 'auctions:bid' auction.id %}" method="post">{% csrf_token %}
                 {% csrf_token %}

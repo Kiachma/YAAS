@@ -25,6 +25,7 @@ class Auction(models.Model):
     deadline = models.DateTimeField()
     status = models.PositiveSmallIntegerField(null=True)
     banned = models.NullBooleanField(null=True)
+
     def __unicode__(self):
         return self.name
     def getAuctionInfo(self):
@@ -50,17 +51,13 @@ class Auction(models.Model):
 
 
     def getLatestBid(self):
-        bid= self.bid_set.annotate(Max('bid'))
-        if bid.count()==0:
-            return None
-        return bid[0]
+        bid= self.bid_set.latest('bid')
+        return bid
 
 
     def getLatestBidSum(self):
-        bid= self.bid_set.annotate(Max('bid'))
-        if bid.count()==0:
-            return None
-        return bid[0].getLatestBidSum()
+        bid= self.bid_set.latest('bid')
+        return bid.bid
 
     def clean_deadline(self):
         data = self.cleaned_data['deadline']
@@ -71,6 +68,7 @@ class Auction(models.Model):
 
 
 class Bid(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
     auction= models.ForeignKey(Auction)
     user = models.ForeignKey(User)
     bid= models.DecimalField(max_digits=9 ,decimal_places=2)

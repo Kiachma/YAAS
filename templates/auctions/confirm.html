@@ -4,11 +4,18 @@
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    <form action="{% url 'auctions:confirm'%}" method="post">{% csrf_token %}
+    <form action="{% url 'auctions:confirm'%}" method="post">
         {% csrf_token %}
-        <label for="confirm">{% trans "Create auction"%}</label>
-        <input type='checkbox' name="confirm" id=confirm>
-        <input type="submit" value="Submit"/>
+        {% trans "Create auction"%}
+        <label class="radio">
+            <input type="radio" name="confirm" id="confirmY" value="True" checked>
+            Yes
+        </label>
+        <label class="radio">
+            <input type="radio" name="confirm" id="confirmN" value="False">
+            No
+        </label>
+        <input class=btn type="submit" value="Submit"/>
     </form>
 
 {% endblock %}

@@ -16,13 +16,19 @@ from Auctions.models import Category, Auction
 
 def base(request,category_id):
     category_list = Category.objects.order_by('name')
-    if category_id is None or category_id==u'None':
+    if category_id is None or category_id==u'None' or category_id=='':
         latest_auction_list = Auction.objects.filter(~Q(banned=True)).order_by('created')
     else:
         latest_auction_list = Auction.objects.filter(Q(category=category_id)&~Q(banned=True)).order_by('created')
     context = {'category_list': category_list,'latest_auction_list': latest_auction_list}
     return render(request, 'base.html', context)
 
+
+def getAuctionBySearch(query_string):
+    entry_query = get_query(query_string, ['name', ])
+    latest_auction_list = Auction.objects.filter(entry_query & ~Q(banned=True)).order_by('created')
+    category_list = Category.objects.order_by('name')
+    return category_list, latest_auction_list
 
 
 def search(request):
@@ -31,10 +37,7 @@ def search(request):
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
 
-        entry_query = get_query(query_string, ['description','name',])
-
-        latest_auction_list = Auction.objects.filter(entry_query &~Q(banned=True)).order_by('created')
-        category_list = Category.objects.order_by('name')
+        category_list, latest_auction_list = getAuctionBySearch(query_string)
     else:
         latest_auction_list = Auction.objects.order_by('created')
         category_list = Category.objects.order_by('name')
@@ -82,7 +85,7 @@ def get_query(query_string, search_fields):
 def populateDb(request):
     pop =DBFixture.Populator()
     pop.populate()
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('index' ,args=('',)))
 
 
 def changeLanguage(request):
