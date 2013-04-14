@@ -20,7 +20,7 @@ def sendMails(auction):
 
 @periodic_task(run_every=crontab(hour="*", minute="*", day_of_week="*"))
 def updateAuctions():
-    auctions = Auction.objects.filter(Q(status=AuctionStatus.due))
+    auctions = Auction.objects.filter(Q(status=AuctionStatus.active))
     i=0
     for auction in auctions:
         if auction.deadline<timezone.now():

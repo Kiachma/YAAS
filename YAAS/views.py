@@ -9,18 +9,19 @@ from django import http
 from django.utils.http import is_safe_url
 from django.conf import settings
 from django.utils.translation import check_for_language
-
+from datetime import datetime
 from YAAS import DBFixture
 from Auctions.models import Category, Auction
 
 
-def base(request,category_id):
+def base(request, category_id):
     category_list = Category.objects.order_by('name')
-    if category_id is None or category_id==u'None' or category_id=='':
-        latest_auction_list = Auction.objects.filter(~Q(banned=True)).order_by('created')
+    if category_id is None or category_id == u'None' or category_id == '':
+        latest_auction_list = Auction.objects.filter(~Q(banned=True) & Q(status=0) & Q(deadline__gte=datetime.now())).order_by('created')
     else:
-        latest_auction_list = Auction.objects.filter(Q(category=category_id)&~Q(banned=True)).order_by('created')
-    context = {'category_list': category_list,'latest_auction_list': latest_auction_list}
+        latest_auction_list = Auction.objects.filter(Q(category=category_id) & ~Q(banned=True) & Q(status=0)).order_by(
+            'created')
+    context = {'category_list': category_list, 'latest_auction_list': latest_auction_list}
     return render(request, 'base.html', context)
 
 
@@ -41,10 +42,9 @@ def search(request):
     else:
         latest_auction_list = Auction.objects.order_by('created')
         category_list = Category.objects.order_by('name')
-    context = {'category_list': category_list,'latest_auction_list': latest_auction_list}
+    context = {'category_list': category_list, 'latest_auction_list': latest_auction_list}
 
     return render(request, 'base.html', context)
-
 
 
 def normalize_query(query_string,
@@ -59,6 +59,7 @@ def normalize_query(query_string,
 
     '''
     return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
+
 
 def get_query(query_string, search_fields):
     ''' Returns a query, that is a combination of Q objects. That combination
@@ -83,9 +84,9 @@ def get_query(query_string, search_fields):
 
 
 def populateDb(request):
-    pop =DBFixture.Populator()
+    pop = DBFixture.Populator()
     pop.populate()
-    return HttpResponseRedirect(reverse('index' ,args=('',)))
+    return HttpResponseRedirect(reverse('index', args=('',)))
 
 
 def changeLanguage(request):

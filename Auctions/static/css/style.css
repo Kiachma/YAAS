@@ -1,0 +1,8 @@
+th.headerSortUp {
+    background-image: url("glyphicons_213_up_arrow.png");
+;background-position:right 15px;background-repeat:no-repeat;
+}
+th.headerSortDown {
+    background-image: url("glyphicons_212_down_arrow.png");
+;background-position:right 15px;background-repeat:no-repeat;
+}

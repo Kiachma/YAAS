@@ -8,7 +8,7 @@ from API import views
 admin.autodiscover()
 urlpatterns = patterns('',
                        (r'^search/$|search/(.+)/$', views.apisearch),
-                       (r'^bid/(?P<auction_id>\d+)/(?P<amount>\d+)$', views.bid),
+                       # (r'^bid/(?P<auction_id>\d+)/(?P<amount>\d+)$', views.bid),
 
 
                        (r'^(?P<username>\w+)/auction/(?P<auction_id>\d+)/bid/(?P<amount>\d+)$', csrf_exempt(views.AuctionBid())),

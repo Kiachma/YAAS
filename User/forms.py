@@ -1,6 +1,9 @@
 from django.forms import ModelForm
-from django.contrib.auth.models import User
 from django.forms.widgets import PasswordInput
+from django.forms.extras.widgets import Select
+
+from Auctions.models import CustomUser
+
 
 class UserForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -11,10 +14,13 @@ class UserForm(ModelForm):
             self.fields['last_name'].widget.attrs['readonly'] = True
 
     class Meta:
-        model = User
-        fields = ('username','first_name','last_name','email', 'password')
+        model = CustomUser
+        fields = ('username','first_name','last_name','email', 'password','language')
+        from django.conf import settings
+        supported = dict(settings.LANGUAGES)
         widgets = {
             'password': PasswordInput(),
+            'language': Select(choices=supported.items())
             }
 
 

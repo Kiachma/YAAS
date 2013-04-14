@@ -2,6 +2,8 @@
 {% load i18n %}
 {% if user.is_authenticated %}
     <div class="pull-right">
+        <span class="brand" >{{ user.get_full_name }}</span>
+
         <a class="btn" href="{% url 'user:index' user_id=user.id %}">{% trans "Edit profile details"%}</a>
         <a class="btn" href="{% url 'user:logout' %}?next={{ request.path }}">{% trans "Log out"%}</a>
     </div>

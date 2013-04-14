@@ -4,38 +4,41 @@
 {% block title %}{{ auction.category }} - {{ auction }}{% endblock %}
 {% block content %}
     {% if user.is_superuser %}
-        <a class="btn btn-danger" href="{% url 'auctions:ban' auction.id %}">{% trans "Ban Auction"%} </a>
+        <a class="btn btn-danger" href="{% url 'auctions:ban' auction.id %}">{% trans "Ban Auction" %} </a>
     {% endif %}
     <fieldset>
-        <legend>{% trans "Information"%}</legend>
+        <legend>{% trans "Information" %}</legend>
         <ul class="unstyled">
             <li>
-                <h5>{% trans "Title"%}</h5> {{ auction.name }}
+                <h5>{% trans "Title" %}</h5> {{ auction.name }}
             </li>
             <li>
-                <h5>{% trans "Status"%}</h5> {{ auction.getStatusString }}
+                <h5>{% trans "Description" %}</h5> {{ auction.description }}
             </li>
             <li>
-                <h5>{% trans "Category"%}</h5> {{ auction.category }}
+                <h5>{% trans "Status" %}</h5> {{ auction.getStatusString }}
             </li>
             <li>
-                <h5>{% trans "Price"%}</h5> {{ auction.min_price }}
+                <h5>{% trans "Category" %}</h5> {{ auction.category }}
             </li>
             <li>
-                <h5>{% trans "Start date"%}</h5> {{ auction.created }}
+                <h5>{% trans "Price" %}</h5> {{ auction.min_price }}
             </li>
             <li>
-                <h5>{% trans "End"%}</h5> {{ auction.deadline }}
+                <h5>{% trans "Start date" %}</h5> {{ auction.created }}
             </li>
             <li>
-                <h5>{% trans "Auction owner"%}</h5> {{ auction.seller.get_full_name }}
+                <h5>{% trans "End" %}</h5> {{ auction.deadline }}
+            </li>
+            <li>
+                <h5>{% trans "Auction owner" %}</h5> {{ auction.seller.get_full_name }}
             </li>
         </ul>
     </fieldset>
     <fieldset>
-        <legend>{% trans "Bids"%}</legend>
+        <legend>{% trans "Bids" %}</legend>
         <ul class="unstyled">
-            <h5>{% trans "Bids"%}</h5>
+            <h5>{% trans "Bids" %}</h5>
             {% for bid in auction.bid_set.all %}
                 {% if bid %}
                     <li>{{ bid.bid }} : {{ bid.user.get_full_name }}</li>
@@ -43,17 +46,28 @@
             {% endfor %}
         </ul>
         {% if user == auction.seller %}
-            <a class="btn" href="{% url 'auctions:edit' auction.id %}">{% trans "edit"%}</a>
-            <a class="btn btn-danger" href="{% url 'auctions:delete' auction.id %}">{% trans "Remove"%} </a>
+            <a class="btn" href="{% url 'auctions:edit' auction.id %}">{% trans "Edit description" %}</a>
+            <a class="btn btn-danger" href="{% url 'auctions:delete' auction.id %}">{% trans "Remove" %} </a>
         {% elif auction.getLatestBid.user == request.user %}
-            {% trans "You've got the highest bid"%}
+            {% trans "You've got the highest bid" %}
         {% elif not auction.banned and user.is_authenticated %}
-            <form action="{% url 'auctions:bid' auction.id %}" method="post">{% csrf_token %}
+            <form action="{% url 'auctions:bid' auction.id %}" method="post">
                 {% csrf_token %}
-                <table>
-                    {{ form.as_p }}
-                </table>
+                {% if form.non_field_errors  %}
+                    <div class="alert alert-error">
+                    {{ form.non_field_errors }}
+                    </div>
+                 {% endif %}'
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="alert alert-error">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                    <label>{{ field.label }}</label> {{ field }}
 
+                {% endfor %}
+                <input type="hidden" name="edited_version" value="{{ auction.version }}">
                 <input class="btn" type="submit" value="Bid"/>
             </form>
         {% endif %}

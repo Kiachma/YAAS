@@ -87,6 +87,9 @@ class AuctionBid:
         if auction.getLatestBidSum() >= bid.bid:
             response = HttpResponse()
             response.status_code = 409
+        elif auction.seller==self.authenticated_user:
+            response = HttpResponse()
+            response.status_code = 409
         else:
             bid.save()
             try:

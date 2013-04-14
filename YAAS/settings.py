@@ -180,3 +180,8 @@ LANGUAGES = (
 
 LOCALE_PATHS='/home/eaura/PycharmProjects/YAAS/locale/'
 USE_I18N = True
+
+AUTHENTICATION_BACKENDS = (
+    'YAAS.auth_backends.CustomUserModelBackend',
+)
+CUSTOM_USER_MODEL = 'Auctions.CustomUser'

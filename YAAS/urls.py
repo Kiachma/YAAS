@@ -12,6 +12,6 @@ urlpatterns = patterns('',
     url(r'^(?P<category_id>None)/', views.base ,name="index"),
     url(r'^(?P<category_id>\d+)/', views.base ,name="index"),
     url(r'^search/', views.search ,name="search"),
-    url(r'^populateDb/', views.populateDb ,name="populateDb"),
+    # url(r'^populateDb/', views.populateDb ,name="populateDb"),
     url(r'^changeLanguage/', views.changeLanguage ,name="changeLanguage"),
 )
